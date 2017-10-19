@@ -77,11 +77,12 @@ module.exports.help = (server, m, args) => {
 };
 
 module.exports.event = (server, m, args) => {
-    if (!args[0]) {
+    m.delete();
+    if (!args[0] && m.member.permission.has('manageGuild')) {
         m.channel.createMessage(`${server.blocked && server.blocked[0] ? 'Blocked events on this server are : ' + server.blocked.join(' ') + '.' : 'This server doesn\'t have any events blocked.'}`);
     }
     // To block events.
-    else if (args[0].toLowerCase() == 'block') {
+    else if (args[0].toLowerCase() == 'block' && m.member.permission.has('manageGuild')) {
         let accepted = args.filter((arg) => { return __Client.fn.constants.ARGS.includes(arg.toLowerCase()); });
         if (server.blocked && server.blocked[0]) {
             accepted.forEach((arg) => { if (arg && !server.blocked.includes(arg.toLowerCase())) server.blocked.push(arg.toLowerCase()); });
@@ -94,7 +95,7 @@ module.exports.event = (server, m, args) => {
 
     }
     // To unblock events.
-    else if (args[0].toLowerCase() == 'unblock') {
+    else if (args[0].toLowerCase() == 'unblock' && m.member.permission.has('manageGuild')) {
         if (server.blocked && server.blocked[0]) {
             let accepted = args.filter((arg) => { return __Client.fn.constants.ARGS.includes(arg.toLowerCase()); });
             accepted.forEach((arg) => {
