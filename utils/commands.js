@@ -62,14 +62,51 @@ module.exports.help = (server, m, args) => {
                             'value': `Description : Sets the channel to log events of that type in. As to be used in the channel you want to bind events to. Available events : \n\n- \`moderation\` - ban unban timeout\n\n- \`chat\` - every chat mode + clear\n\n- \`roles\` - mod unmod\n\nExample :\`\`\`${server.prefix}log moderation - Logs moderation events in that channel.\`\`\``
                         },
                         {
+                            'name': 'event',
+                            'value': `Description : Lets you block or unblock certain events. *events will still be logged in the database just won't be sent to your server.*\n\nExample :\`\`\`${server.prefix}event - Sends a list of events blocked on the server.\n${server.prefix}event block event1 event2 ... - Blocks those events\n${server.prefix}event unblock event1 event2 ...\`\`\``
+                        },
+                        {
                             'name': 'prefix',
-                            'value': `Description : Changes the prefix for every command.Example :\`\`\`${server.prefix}prefix ! - Sets ! as the prefix of commands.\`\`\``
+                            'value': `Description : Changes the prefix for every command.\n\nExample :\`\`\`${server.prefix}prefix ! - Sets ! as the prefix of commands.\`\`\``
                         }]
                 }
             };
 
             __Client.discord.createMessage(channel.id, embed);
         });
+};
+
+module.exports.event = (server, m, args) => {
+    if (!args[0]) {
+        m.channel.createMessage(`${server.blocked && server.blocked[0] ? 'Blocked events on this server are : ' + server.blocked.join(' ') + '.' : 'This server doesn\'t have any events blocked.'}`);
+    }
+    // To block events.
+    else if (args[0].toLowerCase() == 'block') {
+        let accepted = args.filter((arg) => { return __Client.fn.constants.ARGS.includes(arg.toLowerCase()); });
+        if (server.blocked && server.blocked[0]) {
+            accepted.forEach((arg) => { if (arg && !server.blocked.includes(arg.toLowerCase())) server.blocked.push(arg.toLowerCase()); });
+        } else {
+            server.blocked = accepted;
+        }
+
+        m.channel.createMessage(`${accepted.length > 0 ? 'Added : ' + accepted.join(' ') + ' to blocked events.' : 'Please enter a correct argument from this list : ' + __Client.fn.constants.ARGS.join(' ') + '.'}`);
+        __Client.fn.dbUtils.update('dtmodlog', 'discord', server);
+
+    }
+    // To unblock events.
+    else if (args[0].toLowerCase() == 'unblock') {
+        if (server.blocked && server.blocked[0]) {
+            let accepted = args.filter((arg) => { return __Client.fn.constants.ARGS.includes(arg.toLowerCase()); });
+            accepted.forEach((arg) => {
+                server.blocked = server.blocked.filter((blocked) => { return blocked.toLowerCase() != arg.toLowerCase(); });
+            });
+
+            m.channel.createMessage(`${accepted.length > 0 ? 'Removed : ' + accepted.join(' ') + ' from blocked events.' : 'Please enter a correct argument from this list : ' + __Client.fn.constants.ARGS.join(' ') + '.'}`);
+            __Client.fn.dbUtils.update('dtmodlog', 'discord', server);
+        } else {
+            m.channel.createMessage('No events are blocked on this server.');
+        }
+    }
 };
 
 

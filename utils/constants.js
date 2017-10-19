@@ -6,6 +6,8 @@ module.exports.PUBSUB_EVENTS = {
     OTHERS: ['error']
 };
 
+module.exports.ARGS = ['clear', 'emoteonly', 'emoteonlyoff', 'followers', 'followersoff', 'r9k', 'r9koff', 'slow', 'slowoff', 'subscribers', 'subscribersoff', 'ban', 'unban', 'timeout', 'mod', 'unmod'];
+
 // Only an array as not much event of the same type.
 module.exports.DISCORD_EVENTS = ['messageCreate', 'guildCreate', 'guildDelete', 'disconnect'];
 

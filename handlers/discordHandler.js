@@ -12,7 +12,7 @@ module.exports = (event) => {
                             let args = m.content.trim().split(/\s+/g);
                             let command = args.shift().toLowerCase().substring(server.prefix.length);
 
-                            if (['track', 'log', 'twitch', 'prefix', 'help'].includes(command)) {
+                            if (['track', 'log', 'twitch', 'prefix', 'help', 'event'].includes(command)) {
                                 __Client.fn.commands[command](server, m, args);
                             }
                         } else {

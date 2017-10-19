@@ -10,7 +10,11 @@ module.exports.moderation = (channel, event) => {
                                 color: __Client.fn.constants.COLORS[event.data.type.toUpperCase()]
                             };
 
-                            if (server.channels.moderation) __Client.discord.createMessage(server.channels.moderation, { content: '\n', embed });
+                            if (server.blocked) {
+                                if (!server.blocked.includes(event.data.type.toLowerCase()) && server.channels.moderation) __Client.discord.createMessage(server.channels.moderation, { content: '\n', embed });
+                            } else {
+                                if (server.channels.moderation) __Client.discord.createMessage(server.channels.moderation, { content: '\n', embed });
+                            }
                         }
                     });
                 break;
@@ -30,7 +34,11 @@ module.exports.chat = (channel, event) => {
                                 color: __Client.fn.constants.COLORS['CHAT']
                             };
 
-                            if (server.channels.chat) __Client.discord.createMessage(server.channels.chat, { content: '\n', embed });
+                            if (server.blocked) {
+                                if (!server.blocked.includes(event.data.type.toLowerCase()) && server.channels.chat) __Client.discord.createMessage(server.channels.chat, { content: '\n', embed });
+                            } else {
+                                if (server.channels.chat) __Client.discord.createMessage(server.channels.chat, { content: '\n', embed });
+                            }
                         }
                     });
                 break;
@@ -50,7 +58,11 @@ module.exports.roles = (channel, event) => {
                                 color: __Client.fn.constants.COLORS['ROLES']
                             };
 
-                            if (server.channels.roles) __Client.discord.createMessage(server.channels.roles, { content: '\n', embed });
+                            if (server.blocked) {
+                                if (!server.blocked.includes(event.data.type.toLowerCase()) && server.channels.roles) __Client.discord.createMessage(server.channels.roles, { content: '\n', embed });
+                            } else {
+                                if (server.channels.roles) __Client.discord.createMessage(server.channels.roles, { content: '\n', embed });
+                            }
                         }
                     });
                 break;
