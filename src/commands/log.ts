@@ -15,13 +15,13 @@ export = {
 
       switch (args[0].toLowerCase()) {
         case 'moderation':
-          serverConfig.moderationEventsChannel = m.channel.guild.id;
+          serverConfig.moderationEventsChannel = m.channel.id;
           break;
         case 'chat':
-          serverConfig.chatEventsChannel = m.channel.guild.id;
+          serverConfig.chatEventsChannel = m.channel.id;
           break;
         case 'roles':
-          serverConfig.roleEventsChannel = m.channel.guild.id;
+          serverConfig.roleEventsChannel = m.channel.id;
           break;
       }
 
