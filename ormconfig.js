@@ -1,9 +1,9 @@
 module.exports = {
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'admin',
+  host: require('./config.json').db.host,
+  port: require('./config.json').db.port,
+  username: require('./config.json').db.username,
+  password: require('./config.json').db.password,
   database: 'dtmodlog',
   synchronize: true,
   logging: false,
