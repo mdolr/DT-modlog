@@ -22,17 +22,20 @@ export class DiscordServer {
   @IsOptional()
   twitchName: string;
 
-  @Column('text', { name: 'events_channel_moderation', array: true })
+  @Column({ name: 'events_channel_moderation', type: 'varchar', nullable: true })
+  @IsString()
   @IsOptional()
-  moderationEventsChannel: string[];
+  moderationEventsChannel: string;
 
-  @Column('text', { name: 'events_channel_chat', array: true })
+  @Column({ name: 'events_channel_chat', type: 'varchar', nullable: true })
+  @IsString()
   @IsOptional()
-  chatEventsChannel: string[];
+  chatEventsChannel: string;
 
-  @Column('text', { name: 'events_channel_role', array: true })
+  @Column({ name: 'events_channel_role', type: 'varchar', nullable: true })
+  @IsString()
   @IsOptional()
-  roleEventsChannel: string[];
+  roleEventsChannel: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp', precision: 0 })
   joinedAt: Date;
@@ -42,9 +45,9 @@ export class DiscordServer {
     prefix: string,
     twitchID: string,
     twitchName: string,
-    moderationEventsChannel: string[],
-    chatEventsChannel: string[],
-    roleEventsChannel: string[],
+    moderationEventsChannel: string,
+    chatEventsChannel: string,
+    roleEventsChannel: string,
   ) {
     this.id = id;
     this.prefix = prefix;

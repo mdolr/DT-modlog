@@ -25,19 +25,17 @@ export = {
 
       // Else add the channel
       else {
-        const { data } = await axios.get(`https://api.twitch.tv/v5/users?login=${args[0]}`, {
-          headers: { Accept: 'application/vnd.twitchtv.v5+json', 'Client-ID': Bot.config.twitch.apiKey },
-        });
+        const user = await Bot.getTwitchUserByName(args[0]);
 
-        if (data && data.users && data.users[0]) {
-          serverConfig.twitchName = data.users[0].display_name;
-          serverConfig.twitchID = data.users[0]._id;
+        if (user) {
+          serverConfig.twitchName = user.display_name;
+          serverConfig.twitchID = user._id;
 
           await serverRepository.save(serverConfig);
-          await Bot.pubsub.addTopic(data.users[0]._id);
+          await Bot.pubsub.addTopic(user._id);
 
           m.channel.createMessage(
-            `:white_check_mark: Now watching over \`${serverConfig.twitchName}\`'s channel. \nPlease make sure you've added the bot as a twitch moderator on your channel : \`/mod Discord_TwitchModLog\``,
+            `:white_check_mark: Now watching over \`${serverConfig.twitchName}\`'s channel. \nPlease make sure you've added the bot as a twitch moderator on your channel : \`/mod ${Bot.config.twitch.name}\``,
           );
         } else {
           m.channel.createMessage(`Can't find any user with the following channel name : \`${args[0]}\``);

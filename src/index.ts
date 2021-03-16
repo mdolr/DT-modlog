@@ -4,9 +4,9 @@ import { Connection, createConnection } from 'typeorm';
 import * as fs from 'fs';
 import { Client } from 'eris';
 import * as config from '../config.json';
-import * as http from 'http';
 import { DiscordServer } from './entity/DiscordServer';
 import * as ModerationPubSub from 'twitch-moderation-pubsub';
+import axios from 'axios';
 
 export class Core {
   config: any;
@@ -145,7 +145,7 @@ export class Core {
 
   async createServerConfig(m: any) {
     const serverRepository = this.db.getRepository(DiscordServer);
-    await serverRepository.save(new DiscordServer(m.channel.guild.id, '?', null, null, [], [], []));
+    await serverRepository.save(new DiscordServer(m.channel.guild.id, '?', null, null, null, null, null));
   }
 
   async deleteServerConfig(m: any) {
@@ -158,6 +158,19 @@ export class Core {
   async sendDM(user, message) {
     const channel = await this.discord.getDMChannel(user.id);
     await this.discord.createMessage(channel.id, message);
+  }
+
+  async getTwitchUserByName(username) {
+    try {
+      const { data } = await axios.get(`https://api.twitch.tv/v5/users?login=${username}`, {
+        headers: { Accept: 'application/vnd.twitchtv.v5+json', 'Client-ID': this.config.twitch.apiKey },
+      });
+
+      return data && data.users && data.users[0] ? data.users[0] : null;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
   }
 
   // Returns formatted dates for log purposes
