@@ -1,0 +1,37 @@
+{
+  "discord": {
+    "token": "Discord bot Token",
+    "options": {
+      "allowedMentions": {
+        "everyone": true,
+        "roles": true,
+        "users": true
+      },
+      "autoreconnect": true,
+      "getAllUsers": true
+    },
+    "ignoredServers": ["Discord server IDs if you need to ignore some"],
+    "ownerID": "Your Discord account ID"
+  },
+  "twitch": {
+    "id": "Twitch bot user ID",
+    "name": "Twitch bot username",
+    "token": "Twitch OAuth token (without the 'oauth:' part)",
+    "apiKey": "Twitch Client-ID"
+  },
+  "db": {
+    "username": "username",
+    "host": "localhost",
+    "port": "5432",
+    "password": "password"
+  },
+  "colors": {
+    "chat": "6570404",
+    "roles": "1221841",
+    "ban": "16711680",
+    "unban": "65280",
+    "timeout": "16759354",
+    "untimeout": "65280"
+  },
+  "dateLocale": "fr-FR"
+}
