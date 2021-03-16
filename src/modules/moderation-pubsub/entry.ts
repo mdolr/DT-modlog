@@ -64,7 +64,7 @@ export = {
         const watchers = await serverRepository.find({ where: { twitchID: data.channel_id } });
 
         for await (const watcher of watchers) {
-          if (watcher.chatEventsChannel) {
+          if (watcher.moderationEventsChannel) {
             let embed = {
               description: `**CASE ${watcher.caseID} - ${data.type[0].toUpperCase() + data.type.substring(1).toLowerCase()}**\nTarget : ${
                 data.target.name
@@ -77,7 +77,7 @@ export = {
             watcher.caseID += 1;
 
             await serverRepository.save(watcher);
-            await Bot.discord.createMessage(watcher.chatEventsChannel, { content: '\n', embed });
+            await Bot.discord.createMessage(watcher.moderationEventsChannel, { content: '\n', embed });
           }
         }
       });
@@ -88,7 +88,7 @@ export = {
         const watchers = await serverRepository.find({ where: { twitchID: data.channel_id } });
 
         for await (const watcher of watchers) {
-          if (watcher.chatEventsChannel) {
+          if (watcher.roleEventsChannel) {
             let embed = {
               description: `**CASE ${watcher.caseID}** - ${data.target.name} - ${data.target.id} has been ${data.type}ded.`,
               color: Bot.config.colors.roles,
@@ -97,7 +97,7 @@ export = {
             watcher.caseID += 1;
 
             await serverRepository.save(watcher);
-            await Bot.discord.createMessage(watcher.chatEventsChannel, { content: '\n', embed });
+            await Bot.discord.createMessage(watcher.roleEventsChannel, { content: '\n', embed });
           }
         }
       });

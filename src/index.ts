@@ -87,6 +87,14 @@ export class Core {
       console.log(`[${this.formatDate()}] - Retrieving Twitch channels`);
     });
 
+    this.discord.on('guildCreate', async (guild) => {
+      await this.createServerConfig(guild);
+    });
+
+    this.discord.on('guildDelete', async (guild) => {
+      await this.deleteServerConfig(guild);
+    });
+
     this.discord.on('messageCreate', async (m: any) => {
       // DMs / ignored server / message sent by a bot
       if (!m.channel.guild || m.author.bot || this.config.discord.ignoredServers.includes(m.channel.guild.id)) return;
@@ -94,7 +102,7 @@ export class Core {
       const serverConfig = await serverRepository.findOne(m.channel.guild.id);
 
       if (!serverConfig) {
-        this.createServerConfig(m);
+        await this.createServerConfig(m.channel.guild);
       }
 
       if (
@@ -120,15 +128,26 @@ export class Core {
     });
   }
 
-  async createServerConfig(m: any) {
-    const serverRepository = this.db.getRepository(DiscordServer);
-    await serverRepository.save(new DiscordServer(m.channel.guild.id, '?', null, null, null, null, null, 1));
+  async createServerConfig(guild: any) {
+    try {
+      const serverRepository = this.db.getRepository(DiscordServer);
+      return await serverRepository.save(new DiscordServer(guild.id, '?', null, null, null, null, null, 1));
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
   }
 
-  async deleteServerConfig(m: any) {
-    const serverRepository = this.db.getRepository(DiscordServer);
-    const serverConfig = await serverRepository.remove(m.channel.guild.id);
-    await serverRepository.remove(serverConfig);
+  async deleteServerConfig(guild: any) {
+    try {
+      const serverRepository = this.db.getRepository(DiscordServer);
+      const serverConfig = await serverRepository.findOne(guild.id);
+      if (serverConfig) return await serverRepository.remove(serverConfig);
+      else return null;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
   }
 
   // Util functions
