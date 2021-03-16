@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 import { Entity, PrimaryColumn, Column, CreateDateColumn, Index } from 'typeorm';
 
 @Entity()
@@ -10,6 +10,10 @@ export class DiscordServer {
   @Column({ name: 'prefix', type: 'varchar' })
   @IsString()
   prefix: string;
+
+  @Column({ name: 'case_id', type: 'int' })
+  @IsInt()
+  caseID: number;
 
   @Column({ name: 'twitch_id', type: 'varchar', nullable: true })
   @Index({ unique: false })
@@ -42,12 +46,13 @@ export class DiscordServer {
 
   constructor(
     id: string,
-    prefix: string,
+    prefix: string = '?',
     twitchID: string,
     twitchName: string,
     moderationEventsChannel: string,
     chatEventsChannel: string,
     roleEventsChannel: string,
+    caseID: number = 1,
   ) {
     this.id = id;
     this.prefix = prefix;
@@ -58,5 +63,7 @@ export class DiscordServer {
     this.moderationEventsChannel = moderationEventsChannel;
     this.chatEventsChannel = chatEventsChannel;
     this.roleEventsChannel = roleEventsChannel;
+
+    this.caseID = caseID;
   }
 }

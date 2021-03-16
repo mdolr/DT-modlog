@@ -1,6 +1,5 @@
-import { Core } from '..';
-import { DiscordServer } from '../entity/DiscordServer';
-import axios from 'axios';
+import { Core } from '../../..';
+import { DiscordServer } from '../../../entity/DiscordServer';
 
 export = {
   name: 'twitch',

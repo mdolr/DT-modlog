@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import { Client } from 'eris';
 import * as config from '../config.json';
 import { DiscordServer } from './entity/DiscordServer';
-import * as ModerationPubSub from 'twitch-moderation-pubsub';
 import axios from 'axios';
 
 export class Core {
@@ -73,13 +72,7 @@ export class Core {
     }
   }
 
-  twitchListen() {
-    this.pubsub.on('ready', () => {
-      console.log(`[${this.formatDate()}] - Now listening to Twitch events`);
-    });
-  }
-
-  discordListen() {
+  listen() {
     const serverRepository = this.db.getRepository(DiscordServer);
 
     this.discord.on('disconnect', () => {
@@ -92,22 +85,6 @@ export class Core {
       console.log(`[${this.formatDate()}] - Loaded modules : [${Object.keys(this.modules).join(' ')}]`);
       console.log(`[${this.formatDate()}] - Loaded commands : [${Object.keys(this.commands).join(' ')}]`);
       console.log(`[${this.formatDate()}] - Retrieving Twitch channels`);
-
-      const configuredServers = await serverRepository.createQueryBuilder('discord_server').where('discord_server.twitch_id IS NOT NULL').getMany();
-
-      let twitchChannelIDs: string[] = configuredServers.map((channel) => {
-        return channel.twitchID;
-      });
-
-      twitchChannelIDs = twitchChannelIDs.includes(this.config.twitch.id) ? twitchChannelIDs : [this.config.twitch.id].concat(twitchChannelIDs);
-
-      this.pubsub = new ModerationPubSub({
-        token: this.config.twitch.token,
-        mod_id: this.config.twitch.id,
-        topics: twitchChannelIDs,
-      });
-
-      this.twitchListen();
     });
 
     this.discord.on('messageCreate', async (m: any) => {
@@ -145,7 +122,7 @@ export class Core {
 
   async createServerConfig(m: any) {
     const serverRepository = this.db.getRepository(DiscordServer);
-    await serverRepository.save(new DiscordServer(m.channel.guild.id, '?', null, null, null, null, null));
+    await serverRepository.save(new DiscordServer(m.channel.guild.id, '?', null, null, null, null, null, 1));
   }
 
   async deleteServerConfig(m: any) {
@@ -224,7 +201,7 @@ async function run() {
   await Bot.init();
   await Bot.loadCommands('./src/commands');
   await Bot.loadModules();
-  Bot.discordListen();
+  Bot.listen();
 }
 
 run();
